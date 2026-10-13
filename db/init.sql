@@ -1,0 +1,18 @@
+CREATE TABLE zones (
+ id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ name VARCHAR(100) NOT NULL CHECK (length(trim(name)) > 0),
+ latitude DOUBLE PRECISION NOT NULL CHECK (latitude BETWEEN -90 AND 90),
+ longitude DOUBLE PRECISION NOT NULL CHECK (longitude BETWEEN -180 AND 180)
+);
+CREATE TABLE measurements (
+ id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ zone_id INTEGER NOT NULL REFERENCES zones(id) ON DELETE CASCADE,
+ aqi INTEGER NOT NULL CHECK (aqi BETWEEN 0 AND 500),
+ category TEXT NOT NULL,
+ source TEXT NOT NULL,
+ checked_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+INSERT INTO zones(name, latitude, longitude) VALUES
+ ('Москва — центр', 55.7558, 37.6173),
+ ('Санкт-Петербург — центр', 59.9343, 30.3351),
+ ('Казань — центр', 55.7961, 49.1064);
